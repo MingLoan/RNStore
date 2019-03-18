@@ -13,7 +13,7 @@ class InfiniteList extends Component {
   };
 
   render() {
-    const { sections, renderItem, onEndReached } = this.props;
+    const { sections, renderItem, onEndReached, renderSectionFooter } = this.props;
     return (
       <SectionList
         contentInsetAdjustmentBehavior="always"
@@ -25,6 +25,7 @@ class InfiniteList extends Component {
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
         keyExtractor={item => item.id}
+        renderSectionFooter={renderSectionFooter}
       />
     );
   }

@@ -6,7 +6,7 @@ export default StyleSheet.create({
     backgroundColor: '#ddd',
   },
   itemSeparator: {
-    height: 0.5,
+    height: 1,
     backgroundColor: '#ddd',
     marginLeft: 16,
   },

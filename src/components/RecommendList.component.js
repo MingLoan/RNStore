@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, ActivityIndicator } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import styles from './RecommendList.style';
+import AppActivityIndicator from './AppActivityIndicator.component';
 
 class RecommendList extends Component {
   render() {
@@ -9,7 +10,7 @@ class RecommendList extends Component {
       <View style={styles.container}>
         <Text style={styles.titleLabel}>Recommend</Text>
         {isLoading ? (
-          <ActivityIndicator style={styles.activityIndicator} size="small" color="#888" />
+          <AppActivityIndicator />
         ) : (
           <FlatList
             horizontal

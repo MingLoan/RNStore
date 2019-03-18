@@ -8,6 +8,8 @@ import InfiniteList from '../components/InfiniteList.component';
 import AppItem from '../components/AppItem.component';
 import RecommendList from '../components/RecommendList.component';
 import RecommendAppItem from '../components/RecommendAppItem.component';
+import AppActivityIndicator from '../components/AppActivityIndicator.component';
+import EmptyView from '../components/EmptyView.component';
 
 class AppLandingScreen extends Component {
 
@@ -52,6 +54,14 @@ class AppLandingScreen extends Component {
     <RecommendAppItem key={index} item={item} />
   );
 
+  renderSectionFooter = ({ section }) => {
+    const { limit, isSearching } = this.props.data;
+    if (!isSearching && section.index == 1 && limit < 100) {
+      return <AppActivityIndicator/>
+    }
+    return null;
+  };
+
   render() {
     const { data } = this.props;
     const { 
@@ -71,21 +81,38 @@ class AppLandingScreen extends Component {
       />
     );
     const freeApps = topFreeApps.slice(0, limit);
-    const sections = [
-      { title: 'Top Grossing', data: [{ key: 1 }], renderItem: overrideTopGrossingRenderItem },
-      { title: 'Top Free', data: isSearching ? freeAppsSearchResults : freeApps },
-    ];
+
+    const section0 = { index: 0, title: 'Top Grossing', data: [{ key: 1 }], renderItem: overrideTopGrossingRenderItem };
+    const section1 = { index: 1, title: 'Top Free', data: isSearching ? freeAppsSearchResults : freeApps };
+    let sections = [];
+    if (isSearching && grossingAppsSearchResults.length === 0) {
+      // do nothing
+    } else {
+      sections.push(section0);
+    }
+    if (isSearching && freeAppsSearchResults.length === 0) {
+      // do nothing
+    } else {
+      sections.push(section1);
+    }
 
     return (
       <SearchContext 
         searchPlaceholder="Search"
         onSearchTextChanged={this.onSearchTextChanged}
       >
-        <InfiniteList 
+      {
+        sections.length === 0 ? (
+          <EmptyView/>
+        ) : (
+          <InfiniteList 
           sections={sections} 
           renderItem={this.renderAppItem} 
           onEndReached={this.onEndReached}
+          renderSectionFooter={this.renderSectionFooter}
         />
+        )
+      }
       </SearchContext>
     );
   }
