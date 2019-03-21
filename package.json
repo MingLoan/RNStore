@@ -8,7 +8,8 @@
     "react-native-start": "react-native start --reset-cache",
     "ios": "react-native run-ios",
     "android": "react-native run-android",
-    "test": "jest"
+    "test": "jest",
+    "flow-coverage": "flow-coverage-report -i 'src/**/*.js' -i 'src/**/*.jsx' -x 'src/test/**' -x 'src/**/*.style.js' -t html -t json -t text --threshold 90"
   },
   "dependencies": {
     "lodash": "^4.17.11",
@@ -25,9 +26,10 @@
     "@babel/core": "^7.3.4",
     "@babel/runtime": "^7.3.4",
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
     "babel-preset-flow": "^6.23.0",
-    "eslint": "^5.15.1",
+    "eslint": "^5.15.3",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-import": "^2.16.0",

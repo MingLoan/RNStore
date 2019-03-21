@@ -1,3 +1,5 @@
+// @flow
+
 import { combineReducers } from 'redux';
 import {
   REQUEST_TOP_GROSSING_APPS,
@@ -9,6 +11,7 @@ import {
   SEARCH_APPS,
   SEARCH_APPS_RESULTS,
 } from '../actions/appActions';
+import type { State, Action } from '../../flow-types/types';
 
 const INITIAL_STATE = {
   isSearching: false,
@@ -21,7 +24,7 @@ const INITIAL_STATE = {
   freeAppsSearchResults: [],
 };
 
-const dataReducer = (state = INITIAL_STATE, action) => {
+const dataReducer = (state: State = INITIAL_STATE, action: Action): State => {
   switch (action.type) {
     case REQUEST_TOP_GROSSING_APPS:
       return { ...state, isFetchingTopGrossing: true };
@@ -47,9 +50,11 @@ const dataReducer = (state = INITIAL_STATE, action) => {
         grossingAppsSearchResults: [],
         freeAppsSearchResults: [],
       };
-    case SEARCH_APPS_RESULTS:
-      const { grossing, free } = action.payload;
+    case SEARCH_APPS_RESULTS: {
+      const { payload } = action;
+      const { grossing, free } = payload;
       return { ...state, grossingAppsSearchResults: grossing, freeAppsSearchResults: free };
+    }
     default:
       return state;
   }

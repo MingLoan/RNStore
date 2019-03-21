@@ -1,4 +1,7 @@
+// @flow
+
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash/debounce';
@@ -10,81 +13,98 @@ import RecommendList from '../components/RecommendList.component';
 import RecommendAppItem from '../components/RecommendAppItem.component';
 import AppActivityIndicator from '../components/AppActivityIndicator.component';
 import EmptyView from '../components/EmptyView.component';
+import type { Dispatch, State, Section, Row } from '../flow-types/types';
 
-class AppLandingScreen extends Component {
+type Props = {
+  actions: Object,
+  data: State,
+};
 
+class AppLandingScreen extends Component<Props> {
   componentDidMount() {
     this.fetchTopGrossingApps();
     this.fetchTopFreeApps();
   }
-  
+
+  onEndReached = () => {
+    const { data } = this.props;
+    const { isFetchingTopFree, isSearching } = data;
+    if (!isFetchingTopFree && !isSearching) {
+      const { actions } = this.props;
+      const { getTopFreeApps } = actions;
+      getTopFreeApps();
+    }
+  };
+
+  onSearchTextChanged = debounce(
+    searchText => {
+      const { actions } = this.props;
+      const { getSearchAppsResult } = actions;
+      getSearchAppsResult(searchText);
+    },
+    300,
+    { leading: true, trailing: false }
+  );
+
   fetchTopGrossingApps = () => {
-    let { getTopGrossingApps } = this.props.actions;
+    const { actions } = this.props;
+    const { getTopGrossingApps } = actions;
     getTopGrossingApps();
   };
 
   fetchTopFreeApps = () => {
-    let { getTopFreeApps } = this.props.actions;
+    const { actions } = this.props;
+    const { getTopFreeApps } = actions;
     getTopFreeApps();
   };
 
-  // info: {distanceFromEnd: number}
-  onEndReached = (info) => {
-    const { data } = this.props;
-    const { 
-      isFetchingTopFree,
-      isSearching
-    } = data;
-    if (!isFetchingTopFree && !isSearching) {
-      let { getTopFreeApps } = this.props.actions;
-      getTopFreeApps();
-    }
-  };
-  
-  onSearchTextChanged = debounce(searchText => {
-    let { getSearchAppsResult } = this.props.actions;
-    getSearchAppsResult(searchText);
-  }, 300, { leading: true, trailing: false });
+  renderAppItem = ({ item, index }: Row): Node => <AppItem key={index} order={index} item={item} />;
 
-  renderAppItem = ({ item, index, section }) => (
-    <AppItem key={index} order={index} item={item} />
-  );
-
-  renderRecommendItem = ({ item, index, section }) => (
+  renderRecommendItem = ({ item, index }: Row): Node => (
     <RecommendAppItem key={index} item={item} />
   );
 
-  renderSectionFooter = ({ section }) => {
-    const { limit, isSearching } = this.props.data;
-    if (!isSearching && section.index == 1 && limit < 100) {
-      return <AppActivityIndicator/>
+  renderSectionFooter = ({ section }): ?Node => {
+    const { data } = this.props;
+    const { limit, isSearching } = data;
+    if (!isSearching && section.index === 1 && limit < 100) {
+      return <AppActivityIndicator />;
     }
     return null;
   };
 
   render() {
     const { data } = this.props;
-    const { 
-      topGrossingApps, 
+    const {
+      topGrossingApps,
       isFetchingTopGrossing,
       topFreeApps,
       limit,
-      isSearching, 
+      isSearching,
       grossingAppsSearchResults,
       freeAppsSearchResults,
     } = data;
-    const overrideTopGrossingRenderItem = ({ item, index, section }) => (
-      <RecommendList 
-        renderItem={this.renderRecommendItem} 
-        data={isSearching ? grossingAppsSearchResults : topGrossingApps} 
+    const overrideTopGrossingRenderItem = (): Node => (
+      <RecommendList
+        renderItem={this.renderRecommendItem}
+        data={isSearching ? grossingAppsSearchResults : topGrossingApps}
         isLoading={isFetchingTopGrossing}
       />
     );
     const freeApps = topFreeApps.slice(0, limit);
 
-    const section0 = { index: 0, title: 'Top Grossing', data: [{ key: 1 }], renderItem: overrideTopGrossingRenderItem };
-    const section1 = { index: 1, title: 'Top Free', data: isSearching ? freeAppsSearchResults : freeApps };
-    let sections = [];
+    const section0: Section = {
+      index: 0,
+      title: 'Top Grossing',
+      data: [{ key: 1 }],
+      renderItem: overrideTopGrossingRenderItem,
+    };
+    const section1: Section = {
+      index: 1,
+      title: 'Top Free',
+      data: isSearching ? freeAppsSearchResults : freeApps,
+    };
+    const sections: Array<Section> = [];
     if (isSearching && grossingAppsSearchResults.length === 0) {
       // do nothing
     } else {
@@ -97,36 +117,34 @@ class AppLandingScreen extends Component {
     }
 
     return (
-      <SearchContext 
-        searchPlaceholder="Search"
-        onSearchTextChanged={this.onSearchTextChanged}
-      >
-      {
-        sections.length === 0 ? (
-          <EmptyView/>
+      <SearchContext searchPlaceholder="Search" onSearchTextChanged={this.onSearchTextChanged}>
+        {sections.length === 0 ? (
+          <EmptyView />
         ) : (
-          <InfiniteList 
-          sections={sections} 
-          renderItem={this.renderAppItem} 
-          onEndReached={this.onEndReached}
-          renderSectionFooter={this.renderSectionFooter}
-        />
-        )
-      }
+          <InfiniteList
+            sections={sections}
+            renderItem={this.renderAppItem}
+            onEndReached={this.onEndReached}
+            renderSectionFooter={this.renderSectionFooter}
+          />
+        )}
       </SearchContext>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: State) => {
   const { data } = state;
   return { data };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     actions: bindActionCreators(appActions, dispatch),
-  }
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLandingScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppLandingScreen);

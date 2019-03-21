@@ -1,3 +1,6 @@
+// @flow
+
+import type AppModel from '../flow-types/types';
 import { convertToModel } from '../dataModels/appModel';
 
 const TOP_GROSSING_ENDPOINT =
@@ -5,20 +8,27 @@ const TOP_GROSSING_ENDPOINT =
 const TOP_FREE_ENDPOINT = 'https://itunes.apple.com/hk/rss/topfreeapplications/limit=100/json';
 const APP_LOOKUP_ENDPOINT = 'https://itunes.apple.com/hk/lookup?id=';
 
-export const fetchTopGrossingApps = async () => {
+type AppModelPromise = Promise<Array<AppModel>>;
+
+type AppLookUpPromise = Promise<{
+  averageUserRating: number,
+  userRatingCount: number,
+}>;
+
+export const fetchTopGrossingApps = async (): AppModelPromise => {
   try {
     const response = await fetch(TOP_GROSSING_ENDPOINT);
     const data = await response.json();
     const { feed } = data;
     const { entry } = feed;
-    const models = entry.map(x => convertToModel(x));
+    const models: Array<AppModel> = entry.map(x => convertToModel(x));
     return models;
   } catch (err) {
     throw Error(err);
   }
 };
 
-export const fetchTopFreeApps = async () => {
+export const fetchTopFreeApps = async (): AppModelPromise => {
   try {
     const response = await fetch(TOP_FREE_ENDPOINT);
     const data = await response.json();
@@ -31,7 +41,7 @@ export const fetchTopFreeApps = async () => {
   }
 };
 
-export const fetchAppsLookup = async id => {
+export const fetchAppsLookup = async (id: number | string): AppLookUpPromise => {
   try {
     const response = await fetch(APP_LOOKUP_ENDPOINT + id);
     const data = await response.json();
@@ -46,11 +56,13 @@ export const fetchAppsLookup = async id => {
   }
 };
 
-export const getRatingsFromApps = async apps => {
+export const getRatingsFromApps = async (apps: Array<AppModel>) => {
   return Promise.all(
-    apps.map(async app => {
-      const result = await fetchAppsLookup(app.id);
-      return { ...app, ...result };
-    })
+    apps.map(
+      async (app: AppModel): AppModel => {
+        const result = await fetchAppsLookup(app.id);
+        return { ...app, ...result };
+      }
+    )
   );
 };

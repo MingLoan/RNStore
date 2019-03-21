@@ -1,5 +1,9 @@
-export const convertToModel = originalData => {
-  const model = {
+// @flow
+
+import type AppModel from '../flow-types/types';
+
+export const convertToModel = (originalData: Object): AppModel => {
+  const model: AppModel = {
     id: originalData.id.attributes['im:id'],
     title: originalData.title.label,
     name: originalData['im:name'].label,
@@ -15,8 +19,8 @@ export const convertToModel = originalData => {
   return model;
 };
 
-export const searchModel = (models, keyword) => {
-  const filteredModels = models.filter(item => {
+export const searchModel = (models: Array<AppModel>, keyword: string): Array<AppModel> => {
+  const filteredModels = models.filter((item: AppModel) => {
     return (
       item.name.includes(keyword) ||
       item.category.includes(keyword) ||

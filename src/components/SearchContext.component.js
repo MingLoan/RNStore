@@ -1,18 +1,34 @@
+// @flow
+
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import styles from './SearchContext.style';
 
-class SearchContext extends Component {
+type Props = {
+  onSearchTextChanged: Function,
+  children: Node,
+  searchPlaceholder?: string,
+};
+
+type State = {
+  searchText: string,
+};
+
+class SearchContext extends Component<Props, State> {
+  static defaultProps = {
+    searchPlaceholder: 'Search',
+  };
 
   state = {
     searchText: '',
   };
 
-  onChangeText = searchText => {
+  onChangeText = (searchText: string) => {
     const { onSearchTextChanged } = this.props;
     this.setState({ searchText });
-    onSearchTextChanged(searchText)
+    onSearchTextChanged(searchText);
   };
 
   render() {

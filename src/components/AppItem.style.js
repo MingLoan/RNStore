@@ -12,7 +12,8 @@ export default StyleSheet.create({
     fontSize: 18,
     color: '#999',
   },
-  appIcon: { width: 70, height: 70, marginRight: 8 },
+  appIconOdd: { width: 70, height: 70, marginRight: 8, borderRadius: 35 },
+  appIconEven: { width: 70, height: 70, marginRight: 8, borderRadius: 16 },
   contentContainer: {
     flex: 1,
     flexDirection: 'column',
