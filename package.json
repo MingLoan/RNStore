@@ -9,7 +9,9 @@
     "ios": "react-native run-ios",
     "android": "react-native run-android",
     "test": "jest",
-    "flow-coverage": "flow-coverage-report -i 'src/**/*.js' -i 'src/**/*.jsx' -x 'src/test/**' -x 'src/**/*.style.js' -t html -t json -t text --threshold 90"
+    "test:watch": "npm test -- --watch",
+    "prettier": "prettier 'src/**/*.js'",
+    "flow-coverage": "flow-coverage-report -i 'src/**/*.js' -i 'src/**/*.jsx' -x 'src/test/**' -x 'src/**/*.style.js' -x 'src/**/*.test.js' -t html -t json -t text --threshold 90"
   },
   "dependencies": {
     "lodash": "^4.17.11",
