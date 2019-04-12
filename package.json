@@ -10,8 +10,9 @@
     "android": "react-native run-android",
     "test": "jest",
     "test:watch": "npm test -- --watch",
+    "test-cov": "jest --coverage --collectCoverageFrom=src/**/*.js --collectCoverageFrom=!src/**/*.style.js --collectCoverageFrom=!src/**/types.js",
     "prettier": "prettier 'src/**/*.js'",
-    "flow-coverage": "flow-coverage-report -i 'src/**/*.js' -i 'src/**/*.jsx' -x 'src/test/**' -x 'src/**/*.style.js' -x 'src/**/*.test.js' -t html -t json -t text --threshold 90"
+    "flow-cov": "flow-coverage-report -i 'src/**/*.js' -i 'src/**/*.jsx' -x 'src/test/**' -x 'src/**/*.style.js' -x 'src/**/*.test.js' -t html -t json -t text --threshold 90"
   },
   "dependencies": {
     "lodash": "^4.17.11",
@@ -38,7 +39,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
-    "flow-bin": "^0.95.1",
+    "flow-bin": "^0.96.0",
     "jest": "^24.5.0",
     "metro-react-native-babel-preset": "^0.53.1",
     "prettier": "^1.16.4",
