@@ -58,3 +58,6 @@ buck-out/
 
 # Flow
 flow-coverage/
+
+# Test Coverage
+coverage
