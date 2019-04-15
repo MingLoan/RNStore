@@ -5,7 +5,6 @@
       "message": "Your title needs to be prefixed with a topic"
     }
   ],
-  ,
   "body": [
     {
       "pattern": ".{1,}",
